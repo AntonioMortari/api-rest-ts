@@ -1,19 +1,14 @@
-import express, { Application, Request, Response } from 'express'
-import {StatusCodes} from 'http-status-codes'
+import express, { Application} from 'express'
 import 'dotenv/config'
+import './services/translationsYup'
 
 // routes
 import citiesRoutes from './routes/cities'
 
 const server: Application = express()
 server.use(express.json())
-
-// test
-server.get('/', (req: Request, res: Response) => {
-    res.status(StatusCodes.OK).json({ message: 'Ok' })
-})
+server.use(express.urlencoded({extended:true}))
 
 server.use('/cities', citiesRoutes)
-
 
 export { server }

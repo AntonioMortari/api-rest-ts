@@ -1,47 +1,50 @@
-import {Request, Response} from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 // libs
-import {StatusCodes} from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as yup from 'yup'
 
-interface ICidade{
-    name: string,
-}
+// interfaces
+import { ICity } from '../interfaces/ICity'
 
-const bodyValidation: yup.Schema<ICidade> = yup.object().shape({
-    name: yup.string().required()   
-})  
+// utils
+import { validator } from '../middlewares/validation'
+import { bodyValidator, queryValidator } from '../../validations'
+
+
+
+const createValidationMiddleware = validator({
+    body: bodyValidator
+})
+
+const getAllValidationMiddleware = validator({
+    query: queryValidator
+})
+
 
 class CitiesController {
 
-    index(req: Request, res: Response){
-        res.send('ok')
+    getAllValidation(req: Request, res: Response, next: NextFunction){
+        getAllValidationMiddleware(req, res, next)
     }
 
-    show(req: Request, res: Response){
-
+    createValidation(req: Request, res: Response, next: NextFunction) {
+        createValidationMiddleware(req, res, next)
     }
 
-    async create(req: Request<{},{}, ICidade>, res: Response){
-        
-        try {
-            await bodyValidation.validate(req.body)
+    getAll() { }
 
-            res.status(StatusCodes.OK).json(req.body)
-        } catch (error) {
-            console.log(error)
-            const yupError = error as yup.ValidationError
-            res.status(StatusCodes.BAD_REQUEST).json({errors:yupError.errors})
-        }
-    }
+    getOne() { }
 
-    update(req: Request, res: Response){
+    create(req: Request, res: Response) {
+
+        res.send('Não implementado')
 
     }
 
-    delete(req: Request, res: Response){
+    update() { }
 
-    }
+    delete() { }
 
 }
 
