@@ -8,7 +8,7 @@ import { IParamProps } from '../interfaces/IParamProps'
 interface IBodyProps extends Omit<ICity, 'id'> {}
 
 const bodyValidator: yup.Schema<IBodyProps> = yup.object().shape({
-    name: yup.string().required().min(3),
+    name: yup.string().required().min(3).max(150),
 })
 
 const queryValidator: yup.Schema<IQueryParams> = yup.object().shape({

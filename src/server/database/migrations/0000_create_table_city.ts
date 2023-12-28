@@ -6,7 +6,7 @@ export async function up(knex: Knex) {
 
     knex.schema.createTable(ETableNames.city, table => {
         table.bigIncrements('id').primary().index()
-        table.string('name', 150).notNullable()
+        table.string('name', 150).notNullable().checkLength('<=', 150)
 
         table.comment(`Tabela que armazenará as cidades do sistema`)
     })
@@ -20,4 +20,3 @@ export async function down(knex: Knex) {
         .then(() => console.log(`# Drop table ${ETableNames.city}`))
 
 }
-

@@ -11,55 +11,111 @@ import { IParamProps } from '../../interfaces/IParamProps'
 import { CitiesValidator } from './CitiesValidator'
 import { ICity } from '../../database/models/City'
 
-interface IBodyProps extends Omit<ICity, 'id'>{}
+// provider
+import { CitiesProvider } from '../../database/providers/Cities'
+const citiesProvider: CitiesProvider = new CitiesProvider()
+
+interface IBodyProps extends Omit<ICity, 'id'> { }
 
 class CitiesController extends CitiesValidator {
 
-    getAll(req: Request<{}, {}, {}, IQueryParams>, res: Response) {
-        res.status(StatusCodes.OK).json({ data: [] })
-    }
+    async getAll(req: Request<{}, {}, {}, IQueryParams>, res: Response) {
+        const result = await citiesProvider.getAll(
+            req.query.page || 1,
+            req.query.limit || 7,
+            req.query.filter || ''
+        )
 
-    getOne(req: Request<IParamProps>, res: Response) {
-
-        if (req.params.id == 99999) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        if (result instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 errors: {
-                    default: 'Registro não encontrado'
+                    default: result.message
                 }
             })
         }
 
-        res.status(StatusCodes.OK).json({})
+        res.status(StatusCodes.OK).json(result)
     }
 
-    create(req: Request<{}, {}, IBodyProps>, res: Response) {
-        res.status(StatusCodes.CREATED).json({ id: 1 })
-    }
-
-    update(req: Request<IParamProps, {}, IBodyProps>, res: Response) {
-
-        if (req.params.id == 99999) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    async getOne(req: Request<IParamProps>, res: Response) {
+        if (!req.params.id) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
                 errors: {
-                    default: 'Registro não encontrado'
+                    default: 'O parâmetro id é obrigatório'
                 }
             })
         }
 
-        res.status(StatusCodes.OK).json({ message: 'Atualizado com sucesso' })
-    }
+        const result = await citiesProvider.getOne(req.params.id)
 
-    delete(req: Request<IParamProps>, res: Response) {
-
-        if (req.params.id == 99999) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        if (result instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 errors: {
-                    default: 'Registro não encontrado'
+                    default: result.message
                 }
             })
         }
 
-        res.status(StatusCodes.OK).json({ message: 'Deletado com sucesso' })
+        res.status(StatusCodes.OK).json(result)
+    }
+
+    async create(req: Request<{}, {}, IBodyProps>, res: Response) {
+
+        const result = await citiesProvider.create(req.body)
+
+        if (result instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                errors: {
+                    default: result.message
+                }
+            })
+        }
+
+        res.status(StatusCodes.CREATED).json(result)
+    }
+
+    async update(req: Request<IParamProps, {}, IBodyProps>, res: Response) {
+        if (!req.params.id) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                errors: {
+                    default: 'O parâmetro id é obrigatório'
+                }
+            })
+        }
+
+        const result = await citiesProvider.update(req.params.id, req.body)
+
+        if (result instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                errors: {
+                    default: result.message
+                }
+            })
+        }
+
+        res.status(StatusCodes.NO_CONTENT).send()
+    }
+
+    async delete(req: Request<IParamProps>, res: Response) {
+        if (!req.params.id) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                errors: {
+                    default: 'O parâmetro id é obrigatório'
+                }
+            })
+        }
+
+        const result = await citiesProvider.delete(req.params.id)
+
+        if (result instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                errors: {
+                    default: result.message
+                }
+            })
+        }
+
+        res.status(StatusCodes.NO_CONTENT).send()
     }
 
 }

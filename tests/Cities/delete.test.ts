@@ -6,9 +6,16 @@ describe('Cities - Delete', () => {
 
     it('Deletar um registro', async() => {
 
-        const res1 = await testServer.delete('/cities/1')
+        const res1 = await testServer.post('/cities').send({
+            name:'Campinas'
+        })
+        
+        expect(res1.status).toEqual(StatusCodes.CREATED)
 
-        expect(res1.status).toEqual(StatusCodes.OK)
+        const res2 = await testServer
+            .delete(`/cities/${res1.body}`)
+
+        expect(res2.status).toEqual(StatusCodes.NO_CONTENT)
     })
 
     it('Tentar deletar registro com id em um formato inválido (string)', async() => {
