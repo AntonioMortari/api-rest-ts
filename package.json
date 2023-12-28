@@ -9,7 +9,8 @@
     "test": "jest",
     "migrate:latest": "knex --knexfile src/server/database/knex/Enviroments.ts migrate:latest",
     "migrate:rollback":"knex --knexfile src/server/database/knex/Enviroments.ts migrate:rollback",
-    "migrate:rollback:all":"knex --knexfile src/server/database/knex/Enviroments.ts migrate:rollback --all"
+    "migrate:rollback:all":"knex --knexfile src/server/database/knex/Enviroments.ts migrate:rollback --all",
+    "seed:run":"knex --knexfile src/server/database/knex/Enviroments.ts seed:run"
   },
   "dependencies": {
     "@types/knex": "^0.16.1",
