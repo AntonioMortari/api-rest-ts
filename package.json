@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node-dev src/index.ts",
-    "build": "tsc",
+    "postinstall": "tsc",
+    "production":"node ./build/index.js",
     "test": "jest",
     "migrate:latest": "knex --knexfile src/server/database/knex/Enviroments.ts migrate:latest",
     "migrate:rollback":"knex --knexfile src/server/database/knex/Enviroments.ts migrate:rollback",

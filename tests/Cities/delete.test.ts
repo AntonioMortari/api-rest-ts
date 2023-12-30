@@ -1,21 +1,27 @@
 import { StatusCodes } from 'http-status-codes'
 import { testServer } from '../jest.setup'
 
+import { createCity} from '../utils/createTestData'
 
 describe('Cities - Delete', () => {
 
+    let cityId: number
+
+    beforeAll(async () => {
+        try {
+            cityId = await createCity()
+        } catch (error) {
+
+            console.error('Erro ao criar uma cidade:', error)
+        }
+    })
+
     it('Deletar um registro', async() => {
 
-        const res1 = await testServer.post('/cities').send({
-            name:'Campinas'
-        })
-        
-        expect(res1.status).toEqual(StatusCodes.CREATED)
+        const res1 = await testServer
+            .delete(`/cities/${cityId}`)
 
-        const res2 = await testServer
-            .delete(`/cities/${res1.body}`)
-
-        expect(res2.status).toEqual(StatusCodes.NO_CONTENT)
+        expect(res1.status).toEqual(StatusCodes.NO_CONTENT)
     })
 
     it('Tentar deletar registro com id em um formato inválido (string)', async() => {

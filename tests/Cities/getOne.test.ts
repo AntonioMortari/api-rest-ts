@@ -1,19 +1,24 @@
 import { StatusCodes } from 'http-status-codes'
 import { testServer } from './../jest.setup'
 
-
+import { createCity } from '../utils/createTestData'
 
 describe('Cities - GetOne', () => {
 
+    let cityId: number
+
+    beforeAll(async () => {
+        try {
+            cityId = await createCity()
+        } catch (error) {
+
+            console.error('Erro ao criar uma cidade:', error)
+        }
+    })
+
     it('Buscar um registro', async() => {
 
-        const res1 = await testServer.post('/cities').send({
-            name:'Campinas'
-        })
-
-        expect(res1.statusCode).toEqual(StatusCodes.CREATED)
-
-        const res2 = await testServer.get(`/cities/${res1.body}`)
+        const res2 = await testServer.get(`/cities/${cityId}`)
 
         expect(res2.status).toEqual(StatusCodes.OK)
     })

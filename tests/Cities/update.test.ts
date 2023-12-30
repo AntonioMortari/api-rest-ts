@@ -1,24 +1,30 @@
 import { StatusCodes } from 'http-status-codes'
 import { testServer } from '../jest.setup'
 
+import { createCity } from '../utils/createTestData'
 
 describe('Cities - Update', () => {
 
+    let cityId: number
+
+    beforeAll(async () => {
+        try {
+            cityId = await createCity()
+        } catch (error) {
+
+            console.error('Erro ao criar uma cidade:', error)
+        }
+    })
+
     it('Atualizar registro', async () => {
 
-        const res1 = await testServer.post('/cities').send({
-            name: 'Campin'
-        })
-
-        expect(res1.statusCode).toEqual(StatusCodes.CREATED)
-
-        const res2 = await testServer
-            .put(`/cities/${res1.body}`)
+        const res1 = await testServer
+            .put(`/cities/${cityId}`)
             .send({
-                name: 'Campinas'
+                name: 'Hortolândia'
             })
 
-        expect(res2.status).toEqual(StatusCodes.NO_CONTENT)
+        expect(res1.status).toEqual(StatusCodes.NO_CONTENT)
     })
 
     it('Tentar atualizar registro com id em um formato inválido (string)', async () => {
@@ -35,38 +41,26 @@ describe('Cities - Update', () => {
 
     it('Tentar atualizar registro sem passar dados no body', async () => {
 
-        const res1 = await testServer.post('/cities').send({
-            name:'Campinas'
-        })
-        
-        expect(res1.statusCode).toEqual(StatusCodes.CREATED)
-
-        const res2 = await testServer
-            .put(`/cities/${res1.body}`)
+        const res1 = await testServer
+            .put(`/cities/${cityId}`)
             .send({})
 
-        expect(res2.status).toEqual(StatusCodes.BAD_REQUEST)
-        expect(res2.body).toHaveProperty('message.body.name')
+        expect(res1.status).toEqual(StatusCodes.BAD_REQUEST)
+        expect(res1.body).toHaveProperty('message.body.name')
 
 
     })
 
     it('Tentar atualizar registro passando um name com menos de 3 caracteres', async () => {
 
-        const res1 = await testServer.post('/cities').send({
-            name:'Campinas'
-        })
-        
-        expect(res1.statusCode).toEqual(StatusCodes.CREATED)
-
-        const res2 = await testServer
-            .put(`/cities/${res1.body}`)
+        const res1 = await testServer
+            .put(`/cities/${cityId}`)
             .send({
-                name:'Ca'
+                name: 'Ca'
             })
 
-        expect(res2.status).toEqual(StatusCodes.BAD_REQUEST)
-        expect(res2.body).toHaveProperty('message.body.name')
+        expect(res1.status).toEqual(StatusCodes.BAD_REQUEST)
+        expect(res1.body).toHaveProperty('message.body.name')
 
     })
 

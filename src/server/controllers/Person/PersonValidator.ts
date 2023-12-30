@@ -1,13 +1,11 @@
 
+import { updateBodyValidator, bodyValidator } from "../../validations/Person"
+import { queryValidator } from "../../validations"
+import { paramsValidator } from "../../validations"
 
-import { NextFunction, Response, Request } from 'express'
 import { validator } from '../../middlewares/validation'
-import { bodyValidator} from '../../validations/Cities'
-import { paramsValidator, queryValidator } from '../../validations'
 
-const createValidationMiddleware = validator({
-    body: bodyValidator
-})
+import { NextFunction, Request, Response } from "express"
 
 const getAllValidationMiddleware = validator({
     query: queryValidator
@@ -17,12 +15,18 @@ const paramsValidationMiddleware = validator({
     params: paramsValidator
 })
 
-const updateValidationMiddleware = validator({
-    body: bodyValidator,
-    params: paramsValidator
+const createValidationMiddleware = validator({
+    body: bodyValidator
 })
 
-class CitiesValidator {
+const updateValidationMiddleware = validator({
+    params: paramsValidator,
+    body: updateBodyValidator
+})
+
+
+class PersonValidator {
+
     getAllValidation(req: Request, res: Response, next: NextFunction) {
         getAllValidationMiddleware(req, res, next)
     }
@@ -38,6 +42,7 @@ class CitiesValidator {
     updateValidation(req: Request, res: Response, next: NextFunction) {
         updateValidationMiddleware(req, res, next)
     }
+
 }
 
-export { CitiesValidator }
+export { PersonValidator }

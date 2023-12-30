@@ -1,18 +1,23 @@
 import { StatusCodes } from 'http-status-codes'
 import { testServer } from '../jest.setup'
 import { IQueryParams } from '../../src/server/interfaces/IQueryParams'
-
-testServer
+import { createCity, createPerson } from '../utils/createTestData'
 
 describe('Cities - GetAll', () => {
 
+    let personId: number
+    let cityId: number
+
+    beforeAll(async () => {
+        try {
+            cityId = await createCity()
+            personId = await createPerson()
+        } catch (error) {
+            console.error('Erro ao criar os registros:', error)
+        }
+    })
+
     it('Solicitar todas as cidades', async () => {
-
-        const res1 = await testServer.post('/cities').send({
-            name:'Campinas'
-        })
-
-        expect(res1.statusCode).toEqual(StatusCodes.CREATED)
 
         const res2 = await testServer.get('/cities')
 
@@ -21,13 +26,7 @@ describe('Cities - GetAll', () => {
 
     })
 
-    it('Solicitar todas as cidades passando os query params da forma correta', async () => {
-
-        const res1 = await testServer.post('/cities').send({
-            name:'Campinas'
-        })
-
-        expect(res1.statusCode).toEqual(StatusCodes.CREATED)
+    it('Buscar por todas as pessoas passando os query params da forma correta', async () => {
 
         const queryParams: IQueryParams = { page: 1, limit: 20, filter: 'Ca' }
 
