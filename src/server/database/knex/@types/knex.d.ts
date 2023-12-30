@@ -1,12 +1,13 @@
-import { ICity } from '../../../interfaces/ICity'
+import { ICity } from '../../models/City'
+import { IPerson } from '../../models/Person'
 
 
 declare module 'knex/types/tables'{
 
     interface Tables{
-        cidade: ICity,
-        // user: IUser
-        // person: IPerson
+        city: ICity,
+        user: IUser
+        person: IPerson
     }
 
 }
