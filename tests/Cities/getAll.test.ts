@@ -1,28 +1,38 @@
 import { StatusCodes } from 'http-status-codes'
 import { testServer } from '../jest.setup'
 import { IQueryParams } from '../../src/server/interfaces/IQueryParams'
-import { createCity, createPerson } from '../utils/createTestData'
+import { authenticateUser, createCity, createUser } from '../utils/createTestData'
+import { IUser } from '../../src/server/database/models/User'
 
 describe('Cities - GetAll', () => {
 
-    let personId: number
+    let userData: Omit<IUser, 'id'>
+    let acessToken: string
     let cityId: number
 
     beforeAll(async () => {
-        try {
-            cityId = await createCity()
-            personId = await createPerson()
-        } catch (error) {
-            console.error('Erro ao criar os registros:', error)
-        }
+        userData = await createUser()
+        acessToken = await authenticateUser(userData.email, userData.password)
+        cityId = await createCity(acessToken)
     })
 
     it('Solicitar todas as cidades', async () => {
 
-        const res2 = await testServer.get('/cities')
+        const res2 = await testServer
+            .get('/cities')
+            .set('Authorization', `Bearer ${acessToken}`)
 
         expect(Array.isArray(res2.body)).toBe(true)
         expect(res2.status).toEqual(StatusCodes.OK)
+
+    })
+
+    it('Tentar buscar todas as cidades sem token de autorização', async () => {
+
+        const res2 = await testServer
+            .get('/cities')
+
+        expect(res2.status).toEqual(StatusCodes.UNAUTHORIZED)
 
     })
 
@@ -32,6 +42,7 @@ describe('Cities - GetAll', () => {
 
         const res2 = await testServer
             .get('/cities')
+            .set('Authorization', `Bearer ${acessToken}`)
             .query(queryParams)
 
         expect(Array.isArray(res2.body)).toBe(true)
@@ -48,6 +59,7 @@ describe('Cities - GetAll', () => {
 
         const res1 = await testServer
             .get('/cities')
+            .set('Authorization', `Bearer ${acessToken}`)
             .query(queryParams)
 
         expect(res1.body).toHaveProperty('message.query.page')

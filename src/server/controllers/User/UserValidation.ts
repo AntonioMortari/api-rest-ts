@@ -1,25 +1,25 @@
 import { NextFunction, Response, Request } from "express"
 import { validator } from "../../middlewares/validation"
-import { bodyValidator } from "../../validations/User"
-import { emailValidator } from "../../validations/User"
+import { signUpValidator } from "../../validations/User"
+import { signInValidator } from "../../validations/User"
 
 
-const getByEmailValidationMiddleware = validator({
-    body: emailValidator
+const signInValidationMiddleware = validator({
+    body: signInValidator
 })
 
-const createValidationMiddleware = validator({
-    body: bodyValidator
+const signUpValidationMiddleware = validator({
+    body: signUpValidator
 })
 
 class UserValidation {
 
-    getByEmailValidation(req: Request, res:Response, next: NextFunction){
-        getByEmailValidationMiddleware(req,res,next)
+    signInValidation(req: Request, res:Response, next: NextFunction){
+        signInValidationMiddleware(req,res,next)
     }
 
-    createValidation(req: Request, res:Response, next: NextFunction){
-        createValidationMiddleware(req,res,next)
+    signUpValidation(req: Request, res:Response, next: NextFunction){
+        signUpValidationMiddleware(req,res,next)
     }
 
 }

@@ -1,3 +1,4 @@
+import { PasswordCrypto } from '../../services/PasswordCrypto'
 import Knex from '../knex'
 import { ETableNames } from '../knex/ETableNames'
 import { IUser } from '../models/User'
@@ -7,8 +8,15 @@ class UserProvider {
 
     async create(user: Omit<IUser, 'id'>): Promise<number | Error> {
 
+        const hashPassword = await PasswordCrypto.hashPassword(user.password)
+
         try {
-            const [result] = await Knex(ETableNames.user).insert(user).returning('id')
+            const [result] = await Knex(ETableNames.user).insert(
+                {
+                    ...user,
+                    password: hashPassword
+                }
+            ).returning('id')
 
             if (typeof result == 'object') return result.id
             if (typeof result == 'number') return result

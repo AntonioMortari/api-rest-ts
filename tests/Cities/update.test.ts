@@ -1,25 +1,26 @@
 import { StatusCodes } from 'http-status-codes'
 import { testServer } from '../jest.setup'
 
-import { createCity } from '../utils/createTestData'
+import { authenticateUser, createCity, createUser } from '../utils/createTestData'
+import { IUser } from '../../src/server/database/models/User'
 
 describe('Cities - Update', () => {
 
+    let userData: Omit<IUser, 'id'>
+    let acessToken: string
     let cityId: number
 
     beforeAll(async () => {
-        try {
-            cityId = await createCity()
-        } catch (error) {
-
-            console.error('Erro ao criar uma cidade:', error)
-        }
+        userData = await createUser()
+        acessToken = await authenticateUser(userData.email, userData.password)
+        cityId = await createCity(acessToken)
     })
 
     it('Atualizar registro', async () => {
 
         const res1 = await testServer
             .put(`/cities/${cityId}`)
+            .set('Authorization', `Bearer ${acessToken}`)
             .send({
                 name: 'Hortolândia'
             })
@@ -27,9 +28,21 @@ describe('Cities - Update', () => {
         expect(res1.status).toEqual(StatusCodes.NO_CONTENT)
     })
 
+    it('Tentar atualizar registro sem token de autenticação', async () => {
+
+        const res1 = await testServer
+            .put(`/cities/${cityId}`)
+            .send({
+                name: 'Hortolândia'
+            })
+
+        expect(res1.status).toEqual(StatusCodes.UNAUTHORIZED)
+    })
+
     it('Tentar atualizar registro com id em um formato inválido (string)', async () => {
         const res1 = await testServer
             .put('/cities/a')
+            .set('Authorization', `Bearer ${acessToken}`)
             .send({
                 name: 'Campinas'
             })
@@ -43,6 +56,7 @@ describe('Cities - Update', () => {
 
         const res1 = await testServer
             .put(`/cities/${cityId}`)
+            .set('Authorization', `Bearer ${acessToken}`)
             .send({})
 
         expect(res1.status).toEqual(StatusCodes.BAD_REQUEST)
@@ -55,6 +69,7 @@ describe('Cities - Update', () => {
 
         const res1 = await testServer
             .put(`/cities/${cityId}`)
+            .set('Authorization', `Bearer ${acessToken}`)
             .send({
                 name: 'Ca'
             })
@@ -68,6 +83,7 @@ describe('Cities - Update', () => {
 
         const res1 = await testServer
             .put('/cities/99999')
+            .set('Authorization', `Bearer ${acessToken}`)
             .send({ name: 'Campinas' })
 
         expect(res1.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
