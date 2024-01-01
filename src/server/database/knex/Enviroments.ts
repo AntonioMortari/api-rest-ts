@@ -1,19 +1,19 @@
-import {Knex} from 'knex'
+import { Knex } from 'knex'
 
 import path from 'path'
 
 const development: Knex.Config = {
-    client:'sqlite3',
-    connection:{
+    client: 'sqlite3',
+    connection: {
         filename: path.resolve(__dirname, '..', '..', '..', '..', 'database.sqlite')
     },
     useNullAsDefault: true,
 
-    migrations:{
+    migrations: {
         directory: path.resolve(__dirname, '..', 'migrations')
     },
 
-    seeds:{
+    seeds: {
         directory: path.resolve(__dirname, '..', 'seeds')
     },
 
@@ -32,7 +32,25 @@ const test: Knex.Config = {
 }
 
 const production: Knex.Config = {
-    ...development
+    client: 'pg',
+
+    migrations: {
+        directory: path.resolve(__dirname, '..', 'migrations')
+    },
+
+    seeds: {
+        directory: path.resolve(__dirname, '..', 'seeds')
+    },
+
+    connection: {
+        host: process.env.HOST,
+        user: process.env.USER,
+        database: process.env.NAME,
+        password: process.env.PASSWORD,
+        port: Number(process.env.PORT || 5432),
+        ssl: { rejectUnauthorized: false }
+    },
+
 }
 
-export { development, test, production}
+export { development, test, production }

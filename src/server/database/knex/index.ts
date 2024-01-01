@@ -1,5 +1,11 @@
 import knex, {Knex} from 'knex'
 import {test, development, production} from './Enviroments'
+import 'dotenv/config'
+import pg from 'pg'
+
+if(process.env.NODE_ENV == 'production'){
+    pg.types.setTypeParser(20, 'text', parseInt)
+}
 
 let knexConfig: Knex.Config
 
