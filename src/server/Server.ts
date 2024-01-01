@@ -1,6 +1,7 @@
 import express, { Application} from 'express'
 import 'dotenv/config'
 import './services/translationsYup'
+import cors from 'cors'
 
 // routes
 import citiesRoutes from './routes/cities'
@@ -13,6 +14,7 @@ import {ensureAuthenticated} from './middlewares/ensureAuthenticated'
 const server: Application = express()
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
+server.use(cors())
 
 server.use('/cities',ensureAuthenticated, citiesRoutes)
 server.use('/person',ensureAuthenticated, personRoutes)
