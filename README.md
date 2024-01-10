@@ -2,57 +2,52 @@
 Este projeto é uma API Rest em NodeJS e Typescript desenvolvida para fins de aprendizado no curso de **[API Rest em NodeJS e Typescript](https://youtu.be/SVepTuBK4V0)** do canal **[Lucas Souza Dev](https://www.youtube.com/c/LucasSouzaDev)** no YouTube.
 
 
-## Funcionalidades
+## 👩‍💻 Tecnologias Utilizadas
+- **Node.js**: Plataforma para execução do código JavaScript no servidor.
+- **Express**: Framework web para Node.js, simplificando a criação de APIs.
+- **TypeScript**: Adiciona tipagem estática ao JavaScript, aumentando a robustez e legibilidade do código.
+- **Jest**: Framework de testes para garantir a qualidade do código.
+- **Json Web Token**: Utilizado para controle de acesso e autenticação das rotas.
+- **SQLite**: Banco de dados relacional leve e eficiente para armazenamento de dados.
+- **Knex**: SQL query builder utilizado para interagir com o banco de dados.
 
-- **Entidades:**
-  - Cidade
-  - Pessoa (com relacionamento com Cidade)
-  - Usuário
+## Entidades
+  ![entidades](https://github.com/AntonioMortari/api-rest-ts/assets/113060294/38f0e27d-9ce1-48e9-a68d-52e57d3ff215)
 
 - **Operações:**
-  - CRUD para Pessoa e Cidade
+  - CRUD para as entidades "Person" e "City"
   - Utilização de JWT para controle de acesso às rotas
-  - Endpoints para signIn e signUp de Usuário
+  - Endpoints "signUp" e "signIn" para criar e autenticar um usuário
 
-## Configuração e Uso
-
-### Pré-requisitos
-
-- Node.js e npm devem estar instalados localmente.
-- Clone este repositório em sua máquina.
-
-# Como rodar 
-
-Você vai precisar do nodens instalado no seu computador para rodar o projeto.
-
-Clone o repositório:
-```
-$ git clone 
+## Rodando o projeto localmente
+ 
+Clone o projeto
+```bash
+  git clone https://github.com/AntonioMortari/api-rest-ts.git
 ```
 
-Entre na pasta
-```
-$ cd youtube-curso-react-materialui-typescript
+Entre no diretório do projeto
+```bash
+  cd api-rest-ts
 ```
 
 Instale as dependências
+```bash
+  npm install
 ```
-$ yarn install
-```
-
-Configure as variáveis ambiente, crie o arquivo `.env` na pasta raiz do projeto coloque o conteúdo a seguir dentro
-```
-PORT=3333
-NODE_ENV=dev
-
-IS_LOCALHOST=true
-
-ENABLED_CORS=[Lista de endereços separados por ";"]
-JWT_SECRET=[Uma string qualquer]
+OU
+```bash
+  yarn
 ```
 
-Rode o projeto
+Inicialize o projeto
+```bash
+  npm run start:dev
 ```
-$ yarn start
+OU
+```bash
+  yarn start:dev
 ```
+
+
 
